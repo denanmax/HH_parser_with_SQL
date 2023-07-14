@@ -1,7 +1,7 @@
 import psycopg2
 
 from config import config
-from hh_ru import HHApi
+from src.hh_ru import HHApi
 
 
 def create_database(database_name, params):
@@ -48,7 +48,6 @@ def save_to_database(database_name, data, params):
             cur.execute("""
                                 INSERT INTO employers(id, name, emp_url)
                                 VALUES (%s, %s, %s)
-                                ON CONFLICT DO NOTHING
                              """,
                         (company['employer']['id'], company['employer']['name'], company['employer']['alternate_url']))
 
@@ -67,21 +66,21 @@ def save_to_database(database_name, data, params):
         conn.close()
 
 
-# companies_id = [
-#     3529,
-#     78638,
-#     64174,
-#     2748,
-#     3672566,
-#     3183420,
-#     4625,
-#     106571,
-#     1740,
-#     4300631
-# ]
-# params = config()
-# hh = HHApi()
-# data = hh.get_vacancies(companies_id)
-# database_name = "один"
-# create_database(database_name, params)
-# save_to_database(database_name, data, params)
+companies_id = [
+    3529,
+    78638,
+    64174,
+    2748,
+    3672566,
+    3183420,
+    4625,
+    106571,
+    1740,
+    4300631
+]
+params = config()
+hh = HHApi()
+data = hh.get_vacancies(companies_id)
+database_name = "один"
+create_database(database_name, params)
+save_to_database(database_name, data, params)
