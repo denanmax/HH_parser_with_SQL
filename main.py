@@ -1,5 +1,5 @@
 from src.DBManager import DBManager
-from config import config
+from src.config import config
 from src.hh_ru import HHApi
 from src.utils import create_database, save_to_database
 
