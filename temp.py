@@ -3,6 +3,7 @@ import psycopg2
 from config import config
 from hh_ru import HHApi
 
+
 def create_database(database_name, params):
     conn = psycopg2.connect(dbname='postgres', **params)
     conn.autocommit = True
@@ -38,8 +39,8 @@ def create_database(database_name, params):
         conn.commit()
         conn.close()
 
-def save_to_database(database_name, data, params):
 
+def save_to_database(database_name, data, params):
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
@@ -52,35 +53,35 @@ def save_to_database(database_name, data, params):
                         (company['employer']['id'], company['employer']['name'], company['employer']['alternate_url']))
 
         for item in data:
-            from_ = to_ = None
+            salary_from = salary_to = None
             if item['salary']:
-                from_ = item['salary']['from']
-                to_ = item['salary']['to']
+                salary_from = item['salary']['from']
+                salary_to = item['salary']['to']
             cur.execute(f"""
                         INSERT INTO vacancies (name, company_id, salary_min, salary_max, url) 
                         VALUES (%s, %s, %s, %s, %s)""", (
-                item['name'], item['employer']['id'], from_, to_, item['alternate_url']
+                item['name'], item['employer']['id'], salary_from, salary_to, item['alternate_url']
             )
                         )
         conn.commit()
         conn.close()
 
 
-companies_id = [
-            3529,
-            78638,
-            64174,
-            2748,
-            3672566,
-            3183420,
-            4625,
-            106571,
-            1740,
-            4300631
-]
-params = config()
-hh = HHApi()
-data = hh.get_vacancies(companies_id)
-database_name = "один"
-create_database(database_name, params)
-save_to_database(database_name, data, params)
+# companies_id = [
+#     3529,
+#     78638,
+#     64174,
+#     2748,
+#     3672566,
+#     3183420,
+#     4625,
+#     106571,
+#     1740,
+#     4300631
+# ]
+# params = config()
+# hh = HHApi()
+# data = hh.get_vacancies(companies_id)
+# database_name = "один"
+# create_database(database_name, params)
+# save_to_database(database_name, data, params)
