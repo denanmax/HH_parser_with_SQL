@@ -6,20 +6,17 @@ class HHApi:
         self.url = "https://api.hh.ru/vacancies"
 
     def get_vacancies(self, emp_id):
-        """
-            Метод получения данных о вакансиях с сайта hh.ru по id компании
-            param emp_id: id компании для поиска вакансий
-            return: список со словарями
-        """
+        """Метод получения данных о вакансиях с сайта hh.ru по id компании"""
 
         params = {
             "employer_id": list(emp_id),
             "per_page": 100,
             "area": 113,
-            "only_with_salary": True
-
+        }
+        headers = {
+            "User-Agent": "49336138",
         }
 
-        responce = requests.get(self.url, params=params).json()['items']
+        response = requests.get(self.url, params=params, headers=headers).json()['items']
 
-        return responce
+        return response
