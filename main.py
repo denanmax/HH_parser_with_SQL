@@ -1,9 +1,7 @@
-from pprint import pprint
-
-from DBManager import DBManager
+from src.DBManager import DBManager
 from config import config
-from hh_ru import HHApi
-from utils import create_database, save_to_database
+from src.hh_ru import HHApi
+from src.utils import create_database, save_to_database
 
 
 def main():
