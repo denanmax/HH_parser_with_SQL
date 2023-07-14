@@ -1,20 +1,17 @@
 import psycopg2
 
-from config import config
-from hh_ru import HHApi
 
-
-def create_database(db_name, params):
+def create_database(database_name, params):
     conn = psycopg2.connect(dbname='postgres', **params)
     conn.autocommit = True
     cur = conn.cursor()
 
-    cur.execute(f"DROP DATABASE IF EXISTS {db_name}")
-    cur.execute(f"CREATE DATABASE {db_name}")
+    cur.execute(f"DROP DATABASE IF EXISTS {database_name}")
+    cur.execute(f"CREATE DATABASE {database_name}")
 
     conn.close()
 
-    conn = psycopg2.connect(dbname=db_name, **params)
+    conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
         cur.execute("""
@@ -41,8 +38,8 @@ def create_database(db_name, params):
     conn.close()
 
 
-def save_to_database(db_name, data, params):
-    conn = psycopg2.connect(dbname=db_name, **params)
+def save_to_database(database_name, data, params):
+    conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
         for vacancy in data:
@@ -67,24 +64,3 @@ def save_to_database(db_name, data, params):
 
         conn.commit()
         conn.close()
-
-
-companies_id = [
-            3529,
-            78638,
-            64174,
-            2748,
-            3672566,
-            3183420,
-            4625,
-            106571,
-            1740,
-            4300631
-]
-params = config()
-hh = HHApi()
-data = hh.get_vacancies(companies_id)
-db_name = "baza"
-create_database(db_name, params)
-save_to_database(db_name, data, params)
-
