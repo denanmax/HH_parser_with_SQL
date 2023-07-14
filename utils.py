@@ -14,6 +14,7 @@ def create_database(database_name, params):
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
+        """создаем таблицу"""
         cur.execute("""
                         CREATE TABLE IF NOT EXISTS companies (
                         id SERIAL PRIMARY KEY,
@@ -42,6 +43,7 @@ def save_to_database(database_name, data, params):
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
+        """Заполняем таблицу"""
         for vacancy in data:
             cur.execute("""
                                             INSERT INTO companies(id, name, url)
