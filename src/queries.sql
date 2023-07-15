@@ -28,9 +28,9 @@ VALUES (%s, %s, %s, %s, %s)
 
 -получает среднюю зарплату по вакансиям
 
-select AVG(salary_min)
+select (AVG(salary_min) + AVG(salary_max)) / 2
 from vacancies
-WHERE salary_min > 1
+WHERE salary_min IS NOT NULL or salary_max IS NOT NULL
 
 -получает список всех вакансий, у которых зарплата выше средней по всем вакансиям
 

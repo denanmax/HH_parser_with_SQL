@@ -38,9 +38,9 @@ class DBManager:
         with psycopg2.connect(dbname=database_name, **params) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                select AVG(salary_min)
-                from vacancies
-                WHERE salary_min > 1
+            select (AVG(salary_min) + AVG(salary_max)) / 2
+            from vacancies
+            WHERE salary_min IS NOT NULL or salary_max IS NOT NULL
                 """)
                 rows = cur.fetchall()
                 for row in rows:
