@@ -21,7 +21,7 @@ def main():
     params = config()
     hh = HHApi()
     data = hh.get_vacancies(companies_id)
-    database_name = input("Назовите БД ")
+    database_name = input("Назовите БД")
     create_database(database_name, params)
     save_to_database(database_name, data, params)
     db = DBManager(database_name)
