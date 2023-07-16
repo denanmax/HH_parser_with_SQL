@@ -28,41 +28,41 @@ def create_database(database_name, params):
                         CREATE TABLE IF NOT EXISTS vacancies (
                         id SERIAL PRIMARY KEY,
                         name TEXT NOT NULL,
-                        company_id INT REFERENCES companies(id),
+                        company_id INT,
                         salary_min INT,
                         salary_max INT,
-                        url TEXT NOT NULL
-                        );
+                        url TEXT NOT NULL,
+                        FOREIGN KEY (company_id) REFERENCES companies(id)
+    );
                     """)
 
     conn.commit()
     conn.close()
 
 
+
 def save_to_database(database_name, data, params):
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
-        """Заполняем таблицу"""
-        for vacancy in data:
+        for company in data:
             cur.execute("""
-                                            INSERT INTO companies(id, name, url)
-                                            VALUES (%s, %s, %s)
-                                            ON CONFLICT DO NOTHING
-                                         """,
-                        (vacancy['employer']['id'], vacancy['employer']['name'], vacancy['employer']['alternate_url']))
+                                INSERT INTO companies(id, name, url)
+                                VALUES (%s, %s, %s)
+                                ON CONFLICT (id) DO NOTHING
+                             """,
+                        (company['employer']['id'], company['employer']['name'], company['employer']['alternate_url']))
 
-        for vacancy in data:
+        for item in data:
             salary_from = salary_to = None
-            if vacancy['salary']:
-                salary_from = vacancy['salary']['from']
-                salary_to = vacancy['salary']['to']
-            cur.execute("""
-                 INSERT INTO vacancies (name, company_id, salary_min, salary_max, url)
-                 VALUES (%s, %s, %s, %s, %s)
-                 """,
-                        (vacancy['name'], vacancy['employer']['id'], salary_from, salary_to,
-                         vacancy['alternate_url']))
-
+            if item['salary']:
+                salary_from = item['salary']['from']
+                salary_to = item['salary']['to']
+            cur.execute(f"""
+                        INSERT INTO vacancies (name, company_id, salary_min, salary_max, url) 
+                        VALUES (%s, %s, %s, %s, %s)""", (
+                item['name'], item['employer']['id'], salary_from, salary_to, item['alternate_url']
+            )
+                        )
         conn.commit()
         conn.close()
