@@ -1,12 +1,11 @@
 from src.DBManager import DBManager
 from src.config import config
 from src.hh_ru import HHApi
-from src.utils import create_database, save_to_database
+from src.utils import create_database, save_to_database_companies, save_to_database_vacancies
 
 
 def main():
-    companies_id = [
-        3529,
+    companies_id = [3529,
         78638,
         64174,
         2748,
@@ -16,14 +15,14 @@ def main():
         10066154,
         1740,
         4082,
-        238161
-    ]
+        238161]
     params = config()
     hh = HHApi()
     data = hh.get_vacancies(companies_id)
     database_name = input("Назовите БД")
     create_database(database_name, params)
-    save_to_database(database_name, data, params)
+    save_to_database_companies(database_name, data, params)
+    save_to_database_vacancies(database_name, data, params)
     db = DBManager(database_name)
     input('список всех компаний и количество вакансий у каждой компании ')
     print(db.get_companies_and_vacancies_count(database_name, params))
