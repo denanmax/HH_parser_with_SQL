@@ -41,28 +41,33 @@ def create_database(database_name, params):
 
 
 
-def save_to_database(database_name, data, params):
+def save_to_database_companies(database_name, data, params):
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
         for company in data:
             cur.execute("""
-                                INSERT INTO companies(id, name, url)
-                                VALUES (%s, %s, %s)
-                                ON CONFLICT (id) DO NOTHING
-                             """,
-                        (company['employer']['id'], company['employer']['name'], company['employer']['alternate_url']))
+                INSERT INTO companies(id, name, url)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (id) DO NOTHING""",
+                (company['employer']['id'], company['employer']['name'], company['employer']['alternate_url']))
+        conn.commit()
+        conn.close()
 
+def save_to_database_vacancies(database_name, data, params):
+    conn = psycopg2.connect(dbname=database_name, **params)
+    with conn.cursor() as cur:
         for item in data:
             salary_from = salary_to = None
             if item['salary']:
                 salary_from = item['salary']['from']
                 salary_to = item['salary']['to']
             cur.execute(f"""
-                        INSERT INTO vacancies (name, company_id, salary_min, salary_max, url) 
-                        VALUES (%s, %s, %s, %s, %s)""", (
+                                INSERT INTO vacancies (name, company_id, salary_min, salary_max, url) 
+                                VALUES (%s, %s, %s, %s, %s)""", (
                 item['name'], item['employer']['id'], salary_from, salary_to, item['alternate_url']
             )
                         )
-        conn.commit()
-        conn.close()
+
+    conn.commit()
+    conn.close()
