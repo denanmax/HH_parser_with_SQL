@@ -9,9 +9,12 @@ class HHApi:
         """Метод получения данных о вакансиях с сайта hh.ru по id компании"""
 
         params = {
-            "employer_id": list(emp_id),
-            "per_page": 100,
+            "employer_id": emp_id,
             "area": 113,
+            "found": 5,
+            "per_page": 50,
+            "pages": 3,
+            "page": 0,
         }
         headers = {
             "User-Agent": "49336138",
