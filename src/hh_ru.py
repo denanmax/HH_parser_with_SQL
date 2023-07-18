@@ -17,10 +17,12 @@ class HHApi:
         return str(self.companies_id)
 
     def get_vacancies(self):
+        """Получаем вакансии"""
         response = requests.get("https://api.hh.ru/vacancies", params=self.params)
         return response.json()["items"]
 
     def get_employers_data(self):
+        """Получаем работодателя"""
         employers_list = []
 
         for employer_id in self.companies_id:
