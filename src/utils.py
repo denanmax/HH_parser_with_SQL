@@ -17,7 +17,7 @@ def create_database(database_name, params):
         """создаем таблицу"""
         cur.execute("""
                         CREATE TABLE IF NOT EXISTS companies (
-                        id SERIAL PRIMARY KEY,
+                        company_id SERIAL PRIMARY KEY,
                         name TEXT NOT NULL,
                         url TEXT NOT NULL
                         );
@@ -25,49 +25,57 @@ def create_database(database_name, params):
 
     with conn.cursor() as cur:
         cur.execute("""
-                        CREATE TABLE IF NOT EXISTS vacancies (
-                        id SERIAL PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        company_id INT,
-                        salary_min INT,
-                        salary_max INT,
-                        url TEXT NOT NULL,
-                        FOREIGN KEY (company_id) REFERENCES companies(id)
-    );
-                    """)
+            CREATE TABLE IF NOT EXISTS vacancies (
+                    id INT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    company_id INT,
+                    salary_min INT,
+                    salary_max INT,
+                    url VARCHAR(100) NOT NULL,
+                    FOREIGN KEY (company_id) REFERENCES companies(company_id)
+                );
+        """)  # Создание таблицы синформацией о вакансиях (название, id компании, зп с/до, ссылка)
 
     conn.commit()
     conn.close()
-
 
 
 def save_to_database_companies(database_name, data, params):
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
-        for company in data:
+        for employer in data:
             cur.execute("""
-                INSERT INTO companies(id, name, url)
+                INSERT INTO companies (company_id, name, url)
                 VALUES (%s, %s, %s)
-                ON CONFLICT (id) DO NOTHING""",
-                (company['employer']['id'], company['employer']['name'], company['employer']['alternate_url']))
+            """, (
+                employer["id"],
+                employer["name"],
+                employer["url"]
+            ))
         conn.commit()
         conn.close()
+
 
 def save_to_database_vacancies(database_name, data, params):
     conn = psycopg2.connect(dbname=database_name, **params)
     with conn.cursor() as cur:
-        for item in data:
+        for vacancy in data:
             salary_from = salary_to = None
-            if item['salary']:
-                salary_from = item['salary']['from']
-                salary_to = item['salary']['to']
-            cur.execute(f"""
-                                INSERT INTO vacancies (name, company_id, salary_min, salary_max, url) 
-                                VALUES (%s, %s, %s, %s, %s)""", (
-                item['name'], item['employer']['id'], salary_from, salary_to, item['alternate_url']
-            )
-                        )
+            if vacancy['salary']:
+                salary_from = vacancy['salary']['from']
+                salary_to = vacancy['salary']['to']
+            cur.execute("""
+                INSERT INTO vacancies (id, name, company_id, salary_min, salary_max, url)
+                VALUES (%s, %s, %s, %s, %s, %s);
+            """, (
+                vacancy["id"],
+                vacancy["name"],
+                vacancy["employer"]["id"],
+                salary_from,
+                salary_to,
+                vacancy["url"]
+            ))
 
     conn.commit()
     conn.close()
