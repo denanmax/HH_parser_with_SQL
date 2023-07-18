@@ -10,6 +10,7 @@ packages = [{include = "kursovaya_5"}]
 python = "^3.11"
 requests = "^2.31.0"
 psycopg2-binary = "^2.9.6"
+params = "^0.9.0"
 
 
 [build-system]
