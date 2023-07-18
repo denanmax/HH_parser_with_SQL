@@ -41,6 +41,7 @@ def create_database(database_name, params):
 
 
 def save_to_database_companies(database_name, data, params):
+    """Сохраняем данные о работодателе"""
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
@@ -58,6 +59,7 @@ def save_to_database_companies(database_name, data, params):
 
 
 def save_to_database_vacancies(database_name, data, params):
+    """Сохраняем данные о вакансиях"""
     conn = psycopg2.connect(dbname=database_name, **params)
     with conn.cursor() as cur:
         for vacancy in data:
