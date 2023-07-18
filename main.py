@@ -5,36 +5,54 @@ from src.utils import create_database, save_to_database_companies, save_to_datab
 
 
 def main():
-    companies_id = [3529,
-        78638,
-        64174,
-        2748,
-        3672566,
-        3183420,
-        4625,
-        10066154,
-        1740,
-        4082,
-        238161]
     params = config()
     hh = HHApi()
-    data = hh.get_vacancies(companies_id)
-    database_name = input("Назовите БД")
+    hh_employers = hh.get_employers_data()
+    hh_vacancies = hh.get_vacancies()
+    database_name = input("Назовите БД ")
     create_database(database_name, params)
-    save_to_database_companies(database_name, data, params)
-    save_to_database_vacancies(database_name, data, params)
-    db = DBManager(database_name)
-    input('список всех компаний и количество вакансий у каждой компании ')
-    print(db.get_companies_and_vacancies_count(database_name, params))
-    input('список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию ')
-    print(db.get_all_vacancies(database_name, params))
-    input('получает среднюю зарплату по вакансиям ')
-    print(db.get_avg_salary(database_name, params))
-    input('список всех вакансий, у которых зарплата выше средней по всем вакансиям ')
-    print(db.get_vacancies_with_higher_salary(database_name, params))
-    input('список всех вакансий, в названии которых содержатся переданные в метод слова ')
-    keyword = input("введите слово ")
-    print(db.get_vacancies_with_keyword(database_name, params, keyword))
+    save_to_database_companies(database_name, hh_employers, params)
+    save_to_database_vacancies(database_name, hh_vacancies, params)
+    db = DBManager(database_name, params)
+    while True:
+        print("""
+                1 - список всех компаний и количество вакансий у каждой компании
+                2 - список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию
+                3 - получает среднюю зарплату по вакансиям
+                4 - список всех вакансий, у которых зарплата выше средней по всем вакансиям
+                5 - список всех вакансий, в названии которых содержатся переданные в метод слова
+                stop/стоп - Остановить\n""")
+
+        user_input = input("Ваш выбор:").lower()
+
+        if user_input == '1':
+            input('Вывести список всех компаний и количество вакансий у каждой компании?')
+            for vacancy in db.get_vacancies_with_higher_salary():
+                print(vacancy)
+        elif user_input == '2':
+            input(
+                'Вывести список всех вакансий с указанием названия компании, '
+                'названия вакансии и зарплаты и ссылки на вакансию?')
+            for vacancy in db.get_all_vacancies():
+                print(vacancy)
+        elif user_input == '3':
+            input('Вывести получает среднюю зарплату по вакансиям?')
+            for vacancy in db.get_avg_salary():
+                print(vacancy)
+        elif user_input == '4':
+            input('Вывести список всех вакансий, у которых зарплата выше средней по всем вакансиям?')
+            for vacancy in db.get_vacancies_with_higher_salary():
+                print(vacancy)
+        elif user_input == '5':
+            input('Вывести список всех вакансий, в названии которых содержатся переданные в метод слова?')
+            keyword = input("введите слово ")
+            for vacancy in db.get_vacancies_with_keyword(keyword):
+                print(vacancy)
+        elif user_input == 'stop' or user_input == 'стоп':
+            print("ДОСВИДАНИЯ!!!")
+            break
+        else:
+            print("Некорректный ввод!")
 
 
 if __name__ == '__main__':
