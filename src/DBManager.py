@@ -22,6 +22,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_all_vacancies(self):
+        """получает список всех вакансий с указанием названия компании, названия вакансии и зарплаты и ссылки на вакансию."""
         with self.connect as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -34,6 +35,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_avg_salary(self):
+        """получает среднюю зарплату по вакансиям."""
         with self.connect as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -45,6 +47,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_vacancies_with_higher_salary(self):
+        """получает список всех вакансий, у которых зарплата выше средней по всем вакансиям."""
         with self.connect as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -57,6 +60,7 @@ class DBManager:
                 return cur.fetchall()
 
     def get_vacancies_with_keyword(self, keyword):
+        """получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”."""
         with self.connect as conn:
             with conn.cursor() as cur:
                 cur.execute(f"""
