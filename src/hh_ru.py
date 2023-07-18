@@ -7,11 +7,10 @@ class HHApi:
                              3183420, 4625, 10066154, 1740, 4082, 238161]
         self.params = {
             "page": page,
-            "pages": 3,
             "employer_id": self.companies_id,
             "only_with_salary": True,
             "per_page": 100,
-            "area": 113
+            "area": 113,
         }
 
     def __repr__(self):
