@@ -14,6 +14,9 @@ class HHApi:
             "area": 113
         }
 
+    def __repr__(self):
+        return str(self.companies_id)
+
     def get_vacancies(self):
         response = requests.get("https://api.hh.ru/vacancies", params=self.params)
         return response.json()["items"]
