@@ -9,7 +9,7 @@ class DBManager:
         self.database_name = database_name
         self.connect = psycopg2.connect(dbname=database_name, **params)
 
-    def get_vacancies_with_higher_salary(self):
+    def get_companies_and_vacancies_count(self):
         """получает список всех компаний и количество вакансий у каждой компании."""
         with self.connect as conn:
             with conn.cursor() as cur:
