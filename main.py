@@ -27,7 +27,7 @@ def main():
 
         if user_input == '1':
             input('Вывести список всех компаний и количество вакансий у каждой компании?')
-            for vacancy in db.get_vacancies_with_higher_salary():
+            for vacancy in db.get_companies_and_vacancies_count():
                 print(vacancy)
         elif user_input == '2':
             input(
