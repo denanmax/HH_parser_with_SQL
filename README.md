@@ -1,4 +1,4 @@
-# HH parser with uploadind to SQL DB
+# HH parser with uploadindg to SQL DB
 # Курсовая работа №5
 
 
